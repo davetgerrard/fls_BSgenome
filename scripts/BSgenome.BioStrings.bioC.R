@@ -65,14 +65,15 @@ vcountPattern(pattern.long, x1)
 vcountPattern(pattern.long, x1, fixed=F)  # to use degenerate base codes
 vmatchPattern(pattern.long, x1, fixed=F)
 
-
 # Introduce BSgenome packages. load sacCer3 as BSgenome  -----------------
 library(BSgenome.Scerevisiae.UCSC.sacCer3)    # note the other packages being loaded.
+available.genomes()
+# ask me another time how to make your own BSgenome
 
 # search for motif in a genome.
-
 genome <- BSgenome.Scerevisiae.UCSC.sacCer3   # for convenience
 genome
+# accessor functions:-
 seqnames(genome)
 seqlengths(genome)
 barplot(seqlengths(genome), horiz=T, las=1)   # today's only plot?
@@ -80,7 +81,7 @@ summary(genome)
 organism(genome)
 provider(genome)    # ... etc
 
-
+# searching one chromosome
 thisChrom <- genome[["chrI"]]  # when is it loaded into memory?
 thisChrom    # with some genomes (e.g. Human) you will just see NNNNNNNNNNNNNNNNNNNN...NNNNNNNNNNNNNNNNNNNN - unsequenced telomeres.
 #matchPattern("TTCCCTTC", thisChrom, fixed=F)
@@ -92,17 +93,13 @@ tf.hits <- vmatchPattern(pattern.long, genome, fixed=F)  #
 tf.hits 
 is(tf.hits )   # GenomicRanges
 
-
 # load peak regions for  chip-seq data that should match motif.  convert to gRanges.
 
 # e.g. Ste12 in yeast  http://www.nature.com/nature/journal/v464/n7292/full/nature08934.html
-# NO strain is S288c  need SacCer  - or are they the same?
+# files from http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE19635 
+# strain is S288c  need SacCer3  
 # Introduce 'hits' objects. Load data and create GRanges object
-
-
-# findOverlaps and other 'set' operations in GenomicRanges.
-
-peaks.raw <- read.delim("C:/Users/Dave/FLSRGROUP/data/YeastChIp/GSE19635_s96a_peaks.txt", comment.char = "#")
+peaks.raw <- read.delim("../data/YeastChIp/GSE19635_s96a_peaks.txt", comment.char = "#")  # edit the location to work on your machine.
 head(peaks.raw)
 dim(peaks.raw)
 # chromosome field does not match exactly with seqnames(genome)
@@ -117,20 +114,30 @@ old.counts
 table(peaks.raw$chr)
 
 
-
 # make GR.ranges object.
 head(peaks.raw)
 peaks.GR <- GRanges(peaks.raw$chr, IRanges(peaks.raw$start, peaks.raw$end))   # use of IRanges() within GRanges()
 peaks.GR
 
-
+# findOverlaps and other 'set' operations in GenomicRanges.
 # as we are interested in finding the motifs that are bound, we'll make the tf.hits the query.
-findOverlaps(tf.hits, peaks.GR)
-overlapsAny(tf.hits, peaks.GR)
+ov <- findOverlaps(tf.hits, peaks.GR)
+ov
+ova <- overlapsAny(tf.hits, peaks.GR)
 
+tf.hits[ov@queryHits[1]]
+peaks.GR[ov@subjectHits[1]]
+width(peaks.GR[ov@subjectHits])
+ov@subjectHits[2]    # a short peak
+this.peak <- peaks.GR[ov@subjectHits[2]]
+this.peak.seq <- getSeq(genome, names=seqnames(this.peak), start=start(this.peak), end=end(this.peak))
 
-# tip
-?reduce  # this and other clever set operations.
+# and just because I can.
+pairwiseAlignment(pattern = pattern.long, subject = this.peak.seq, type="local-global")
+
+# how many ChIP-peaks contain at least one motif
+sum(overlapsAny(peaks.GR,tf.hits))
+length(peaks.GR)
 
 # from here....
 # rtracklayer
@@ -142,6 +149,10 @@ overlapsAny(tf.hits, peaks.GR)
 # SNP assocationss
 # export data  head(as.data.frame(peaks.GR))
 
+# tip
+?reduce  # this and other clever set operations.
+# not covered
+# masks, matchPDict(), letterfrequency()
 
 # if time
 # packrat::status()  # this probably won't work on your machine..
