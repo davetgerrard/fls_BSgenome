@@ -128,8 +128,8 @@ ova <- overlapsAny(tf.hits, peaks.GR)
 tf.hits[ov@queryHits[1]]
 peaks.GR[ov@subjectHits[1]]
 width(peaks.GR[ov@subjectHits])
-ov@subjectHits[2]    # a short peak
-this.peak <- peaks.GR[ov@subjectHits[2]]
+ov@subjectHits[1]    # a short peak
+this.peak <- peaks.GR[ov@subjectHits[1]]
 this.peak.seq <- getSeq(genome, names=seqnames(this.peak), start=start(this.peak), end=end(this.peak))
 
 # and just because I can.
