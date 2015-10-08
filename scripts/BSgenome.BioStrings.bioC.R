@@ -18,6 +18,7 @@
 # Introduce Biostrings objects, reading (DNA) sequence, searching for patterns   ----------------------
 library(Biostrings)
 # http://bioconductor.org/packages/release/bioc/vignettes/Biostrings/inst/doc/Biostrings2Classes.pdf
+lsf.str("package:Biostrings")   # recent tip on @RLangTip
 
 b <- BString("I am a BString object")
 b 
