@@ -26,7 +26,7 @@ The tutorial is in the script [BSgenome.BioStrings.bioC.R](BSgenome.BioStrings.b
 
 
 ### Data ---------------------------
-Tutorial uses a table (bed file) of genomic ChIP-seq peaks from [Zheng et al., 2010, Nature](http://www.nature.com/nature/journal/v464/n7292/full/nature08934.html)
+Tutorial uses a table of genomic ChIP-seq peaks from [Zheng et al., 2010, Nature](http://www.nature.com/nature/journal/v464/n7292/full/nature08934.html)
 
 The data table [GSE19635_s96a_peaks.txt](GSE19635_s96a_peaks.txt) was downloaded from [GEO](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE19635) and uncompressed. 
 
