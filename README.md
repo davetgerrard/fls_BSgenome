@@ -17,10 +17,12 @@ biocLite("BSgenome.Scerevisiae.UCSC.sacCer3")
 ```
 ### The Plan. --------------------------------------
 Find instances of a DNA-sequence motif in a genome that also have evidence of binding from a ChIP-seq experiment.
+
 1. Biostrings
 2. BSgenome
 3. GenomicRanges
 
+The tutorial is in the script [BSgenome.BioStrings.bioC.R](BSgenome.BioStrings.bioC.R). You will need to download some data before you start (see below).
 
 
 ### Data ---------------------------
