@@ -100,7 +100,7 @@ is(tf.hits )   # GenomicRanges
 # files from http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE19635 
 # strain is S288c  need SacCer3  
 # Introduce 'hits' objects. Load data and create GRanges object
-peaks.raw <- read.delim("../data/YeastChIp/GSE19635_s96a_peaks.txt", comment.char = "#")  # edit the location to work on your machine.
+peaks.raw <- read.delim("GSE19635_s96a_peaks.txt", comment.char = "#")  # edit the location to work on your machine.
 head(peaks.raw)
 dim(peaks.raw)
 # chromosome field does not match exactly with seqnames(genome)
@@ -123,7 +123,7 @@ peaks.GR
 # findOverlaps and other 'set' operations in GenomicRanges.
 # as we are interested in finding the motifs that are bound, we'll make the tf.hits the query.
 ov <- findOverlaps(tf.hits, peaks.GR)
-ov
+ov                      # a pair of indices
 ova <- overlapsAny(tf.hits, peaks.GR)
 
 tf.hits[ov@queryHits[1]]
@@ -139,6 +139,14 @@ pairwiseAlignment(pattern = pattern.long, subject = this.peak.seq, type="local-g
 # how many ChIP-peaks contain at least one motif
 sum(overlapsAny(peaks.GR,tf.hits))
 length(peaks.GR)
+
+# get the sequences
+motifPeaks <- peaks.GR[unique(ov@subjectHits)]    # there may be duplicates.  inspect 'ov'
+motifPeak.seqs <- getSeq(genome, names=seqnames(motifPeaks), start=start(motifPeaks), end=end(motifPeaks))
+names(motifPeak.seqs)
+names(motifPeak.seqs) <- paste0(seqnames(motifPeaks), ":", start(motifPeaks), "-", end(motifPeaks))
+writeXStringSet(motifPeak.seqs, file="motifPeaks.fasta")
+
 
 # from here....
 # rtracklayer
